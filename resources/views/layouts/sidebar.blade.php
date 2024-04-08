@@ -25,19 +25,14 @@
             'menus' => [
                 [
                     'accessor' => ['admin', 'user'],
-                    'name' => 'locations',
+                    'name' => 'Menu name',
                     'isDropdown' => true,
                     'icon' => 'fas fa-map-marked-alt',
                     'links' => [
                         [
-                            'navName' => 'list location',
+                            'navName' => 'Menus',
                             'link' => 'route()',
                             'accessor' => ['admin', 'user'],
-                        ],
-                        [
-                            'navName' => 'add new location',
-                            'link' => 'route()',
-                            'accessor' => ['admin', 'gov'],
                         ],
                     ],
                 ],
