@@ -1,44 +1,67 @@
 @php
     $roleCheck = Auth::user()->role;
+    $sidebar = [];
 
-    $sidebarMenu = [
-        [
-            'headerName' => 'dashboard',
-            'menus' => [
-                [
-                    'accessor' => ['admin', 'user'],
-                    'name' => 'Dashboard',
-                    'isDropdown' => false,
-                    'links' => [
-                        [
-                            'icon' => 'fas fa-fire',
-                            'navName' => 'dashboard',
-                            'link' => 'route()',
-                            'accessor' => ['admin', 'user'],
+    if ($roleCheck == 'admin') {
+        $sidebar = [
+            [
+                'headerName' => 'dashboard',
+                'menus' => [
+                    [
+                        'name' => 'Dashboard',
+                        'isDropdown' => false,
+                        'links' => [
+                            [
+                                'icon' => 'fas fa-fire',
+                                'navName' => 'dashboard',
+                                'link' => 'route()',
+                                'accessor' => ['admin', 'user'],
+                            ],
                         ],
                     ],
                 ],
             ],
-        ],
-        [
-            'headerName' => 'master',
-            'menus' => [
-                [
-                    'accessor' => ['admin', 'user'],
-                    'name' => 'Menu name',
-                    'isDropdown' => true,
-                    'icon' => 'fas fa-map-marked-alt',
-                    'links' => [
-                        [
-                            'navName' => 'Menus',
-                            'link' => 'route()',
-                            'accessor' => ['admin', 'user'],
+            [
+                'headerName' => 'master',
+                'menus' => [
+                    [
+                        'name' => 'Menu name',
+                        'isDropdown' => true,
+                        'icon' => 'fas fa-map-marked-alt',
+                        'links' => [
+                            [
+                                'navName' => 'Menus',
+                                'link' => 'route()',
+                                'accessor' => ['admin', 'user'],
+                            ],
                         ],
                     ],
                 ],
             ],
-        ],
-    ];
+        ];
+    }
+
+    if ($roleCheck == 'user') {
+        $sidebar = [
+            [
+                'headerName' => 'dashboard',
+                'menus' => [
+                    [
+                        'name' => 'Dashboard',
+                        'isDropdown' => false,
+                        'links' => [
+                            [
+                                'icon' => 'fas fa-fire',
+                                'navName' => 'dashboard',
+                                'link' => 'route()',
+                                'accessor' => ['admin', 'user'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
 @endphp
 
 <div class="main-sidebar sidebar-style-2">
@@ -50,40 +73,33 @@
             <a href="#">App</a>
         </div>
         <ul class="sidebar-menu text-capitalize">
-            @foreach ($sidebarMenu as $item)
+            @foreach ($sidebar as $item)
                 <li class="menu-header">{{ $item['headerName'] }}</li>
                 @foreach ($item['menus'] as $menu)
-                    @if (in_array($roleCheck, $menu['accessor']))
-                        @if ($menu['isDropdown'])
-                            <li class="dropdown {{ strtolower($page) == strtolower($menu['name']) ? 'active' : '' }}">
-                                <a href="#" class="nav-link has-dropdown">
-                                    <i class="{{ $menu['icon'] }}"></i>
-                                    <span>{{ $menu['name'] }}</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    @foreach ($menu['links'] as $menu)
-                                        @if (in_array($roleCheck, $menu['accessor']))
-                                            <li
-                                                class="{{ strtolower($subPage) == strtolower($menu['navName']) ? 'active' : '' }}">
-                                                <a class="nav-link"
-                                                    href="{{ $menu['link'] }}">{{ $menu['navName'] }}</a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </li>
-                        @else
-                            @foreach ($menu['links'] as $menu)
-                                @if (in_array($roleCheck, $menu['accessor']))
-                                    <li class="{{ strtolower($page) == strtolower($menu['navName']) ? 'active' : '' }}">
-                                        <a class="nav-link" href="{{ $menu['link'] }}">
-                                            <i class="{{ $menu['icon'] }}"></i>
-                                            <span class="text-capitalize">{{ $menu['navName'] }}</span>
-                                        </a>
+                    @if ($menu['isDropdown'])
+                        <li class="dropdown {{ strtolower($page) == strtolower($menu['name']) ? 'active' : '' }}">
+                            <a href="#" class="nav-link has-dropdown">
+                                <i class="{{ $menu['icon'] }}"></i>
+                                <span>{{ $menu['name'] }}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @foreach ($menu['links'] as $menu)
+                                    <li
+                                        class="{{ strtolower($subPage) == strtolower($menu['navName']) ? 'active' : '' }}">
+                                        <a class="nav-link" href="{{ $menu['link'] }}">{{ $menu['navName'] }}</a>
                                     </li>
-                                @endif
-                            @endforeach
-                        @endif
+                                @endforeach
+                            </ul>
+                        </li>
+                    @else
+                        @foreach ($menu['links'] as $menu)
+                            <li class="{{ strtolower($page) == strtolower($menu['navName']) ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ $menu['link'] }}">
+                                    <i class="{{ $menu['icon'] }}"></i>
+                                    <span class="text-capitalize">{{ $menu['navName'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
                     @endif
                 @endforeach
             @endforeach
